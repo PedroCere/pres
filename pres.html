@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación PPS - Pedro Cereghetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #050505;
+            --bg-sidebar: #0a0a0c;
+            --text-main: #f8fafc;
+            --text-muted: #8b95a5;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #fde047;
+            --card-bg: #111113;
+            --card-border: #262930;
+        }
+
+        /* 1. RESET Y FONDO GLOBAL (Forzado para evitar que Reveal.js lo pise a blanco) */
+        html, body {
+            background-color: var(--bg-main) !important;
+            background-image: radial-gradient(#2a2d36 1px, transparent 1px) !important;
+            background-size: 24px 24px !important;
+            font-family: 'Inter', sans-serif !important;
+            margin: 0; padding: 0; height: 100vh; overflow: hidden;
+            color: var(--text-main) !important;
+        }
+
+        /* Limpieza profunda de fondos de Reveal */
+        .reveal-viewport, .reveal, .reveal .slides, .reveal .slide-background {
+            background: transparent !important;
+        }
+        .reveal .backgrounds { display: none !important; }
+
+        /* 2. UI FIJA FUERA DE REVEAL.JS */
+        .top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent-yellow) 0%, var(--accent-blue) 15%, var(--accent-green) 30%, transparent 50%);
+            z-index: 1000;
+        }
+        
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 90px;
+            z-index: 900; pointer-events: none;
+        }
+        
+        .header-info {
+            position: absolute; top: 20px; left: 30px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent-yellow);
+            text-transform: uppercase; pointer-events: auto;
+        }
+        .header-info span { color: var(--text-main); margin-left: 8px; }
+        
+        .header-title {
+            position: absolute; top: 40px; left: 30px;
+            font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;
+            pointer-events: auto;
+        }
+        
+        .page-counter {
+            position: absolute; top: 25px; right: 40px;
+            text-align: right; pointer-events: auto;
+        }
+        .page-counter .badge {
+            display: inline-block; background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue); font-size: 10px; font-weight: 800; padding: 4px 12px;
+            border-radius: 12px; margin-bottom: 5px; letter-spacing: 1px;
+        }
+        .page-counter .numbers { font-size: 28px; font-weight: 800; color: var(--text-main); }
+        .page-counter .total { font-size: 16px; font-weight: 600; color: var(--text-muted); }
+        
+        .sidebar {
+            position: fixed; top: 90px; left: 0; width: 280px; bottom: 0;
+            padding: 20px; box-sizing: border-box; z-index: 900;
+            border-right: 1px solid var(--card-border);
+            background-color: var(--bg-sidebar);
+            overflow-y: auto;
+        }
+        .nav-item {
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 8px;
+            font-size: 13px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        }
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--text-main);
+        }
+        .nav-item .dots {
+            display: block; margin-top: 6px; font-size: 10px;
+            color: #333; letter-spacing: 2px;
+        }
+        .nav-item.active .dots { color: var(--accent-blue); }
+
+        .nav-buttons {
+            position: fixed; bottom: 40px; right: 40px; display: flex; gap: 15px; z-index: 1000;
+        }
+        .btn {
+            padding: 12px 24px; border-radius: 24px; font-family: 'Inter', sans-serif; font-weight: 600;
+            font-size: 14px; cursor: pointer; border: none; outline: none; transition: 0.2s;
+        }
+        .btn-prev { background: #1a1d24; color: white; border: 1px solid #333; }
+        .btn-prev:hover { background: #262a33; }
+        .btn-next { background: var(--accent-blue); color: white; }
+        .btn-next:hover { background: #2563eb; }
+
+        /* 3. CONFIGURACIÓN DEL CONTENEDOR REVEAL.JS (Evita que rompa el layout) */
+        .reveal {
+            position: absolute !important;
+            top: 90px !important;
+            left: 280px !important;
+            width: calc(100vw - 280px) !important;
+            height: calc(100vh - 90px) !important;
+        }
+        /* Ocultar flechas nativas y barra de progreso de Reveal */
+        .reveal .controls, .reveal .progress { display: none !important; }
+        
+        /* 4. ESTILOS DE CONTENIDO INTERNO DE DIAPOSITIVAS */
+        .reveal section { text-align: left; padding: 0 40px; }
+        
+        .slide-layout {
+            display: flex; flex-direction: row; gap: 60px; align-items: center; width: 100%;
+        }
+        .slide-left { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .slide-right { flex: 1.2; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+
+        /* Variaciones visuales para cards (sin tocar contenido) */
+        .cards-stack { display: flex; flex-direction: column; gap: 16px; }
+        .cards-grid-2-1 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            align-items: start;
+        }
+        .cards-grid-2-1 .card:nth-child(1) { grid-column: 1; grid-row: 1; }
+        .cards-grid-2-1 .card:nth-child(2) { grid-column: 2; grid-row: 1; }
+        .cards-grid-2-1 .card:nth-child(3) { grid-column: 1 / span 2; grid-row: 2; }
+        
+        .cards-grid-1x3 { display: grid; grid-template-rows: auto auto auto; gap: 16px; }
+
+        .card--compact { padding: 18px !important; }
+        .card--center { text-align: center; }
+        
+        .section-tag {
+            color: var(--accent-blue); font-size: 14px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;
+        }
+        
+        /* Forzando estilos de tipografía sobre Reveal */
+        .reveal h2 {
+            font-family: 'Inter', sans-serif !important; font-size: 48px !important;
+            font-weight: 800 !important; text-transform: none !important;
+            line-height: 1.15 !important; margin: 0 0 24px 0 !important; color: var(--text-main) !important;
+            letter-spacing: -1px !important; text-shadow: none !important;
+        }
+        .reveal p {
+            font-family: 'Inter', sans-serif !important; font-size: 18px !important;
+            line-height: 1.6 !important; color: var(--text-muted) !important; margin: 0 0 16px 0 !important;
+        }
+        
+        .card {
+            background: var(--card-bg) !important; border: 1px solid var(--card-border) !important;
+            border-radius: 12px !important; padding: 24px !important; position: relative !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        }
+        .card.glow-blue { border-color: rgba(59, 130, 246, 0.4) !important; box-shadow: 0 0 20px rgba(59,130,246,0.05) !important; }
+        .card.glow-green { border-color: rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 20px rgba(16,185,129,0.05) !important; }
+        .card.glow-yellow { border-color: rgba(253, 224, 71, 0.4) !important; box-shadow: 0 0 20px rgba(253,224,71,0.05) !important; }
+        
+        .card-title {
+            font-family: 'Inter', sans-serif !important; font-size: 12px !important; font-weight: 700 !important; 
+            color: var(--text-main) !important; margin: 0 0 12px 0 !important; 
+            text-transform: uppercase !important; letter-spacing: 1px !important;
+        }
+        .card p { font-size: 15px !important; margin: 0 !important; color: #a1a1aa !important; }
+        
+        .highlight { color: var(--accent-green) !important; font-weight: 600 !important; }
+        .highlight-yellow { color: var(--accent-yellow) !important; font-weight: 600 !important; }
+    </style>
+</head>
+<body>
+    <div class="top-bar"></div>
+    
+    <div class="header">
+        <div class="header-info">PEDRO CEREGHETTI <span></span></div>
+        <div class="header-title">Adopción de IA en BPP</div>
+        <div class="page-counter">
+            <div class="badge">TEORIA</div><br>
+            <span class="numbers" id="current-page">01</span><span class="total"> / 07</span>
+        </div>
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="nav-item active" data-index="0">1. Portada<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="1">2. Contexto Organizacional<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="2">3. La Problemática<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="3">4. Propuesta Profesional<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="4">5. Observabilidad<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="5">6. Eficiencia y Despliegue<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="6">7. Conclusiones<br><span class="dots">●</span></div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="btn btn-prev" onclick="Reveal.prev()">Anterior</button>
+        <button class="btn btn-next" onclick="Reveal.next()">Siguiente</button>
+    </div>
+
+    <!-- EL CONTENEDOR REVEAL ESTÁ RESTRINGIDO AL ÁREA LIBRE -->
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- SLIDE 0 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">00 · PRESENTACIÓN</div>
+                        <h2>Diagnóstico y Optimización de la Adopción de IA</h2>
+                        <p>Práctica Profesional</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="card glow-blue">
+                            <div class="card-title">Autor</div>
+                            <p>Pedro Mariano Cereghetti<br>Legajo: SOF01747 | Ingeniería en Software</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Instituciones</div>
+                            <p>Organización: Mercado Libre (BPP)<br>Profesor:Javier Grando (Universidad Siglo 21)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 1 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">01 · CONTEXTO</div>
+                        <h2>Contexto Organizacional</h2>
+                        <p>El ecosistema y los desafíos operativos de la unidad de Post-Compra.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="cards-grid-2-1">
+                            <div class="card">
+                                <div class="card-title">Dominio</div>
+                                <p>Buyer Protection Program (BPP) en la unidad de Post-Compra.</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">Arquitectura</div>
+                                <p>Ecosistema de microservicios en Go de alto tráfico transaccional.</p>
+                            </div>
+                            <div class="card glow-blue">
+                                <div class="card-title">El Desafío del "Beta Continuo"</div>
+                                <p>Asegurarse de que la prioridad operativa de entregar valor en sprints de 2 semanas no relege a un segundo plano las pausas metodológicas necesarias para innovar de forma segura.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">02 · PROBLEMÁTICA</div>
+                        <h2>La Problemática Central</h2>
+                        <p>Falta de un marco metodológico estandarizado para la IA.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="cards-grid-1x3">
+                            <div class="card card--center"> 
+                                <p>Existía un uso fragmentado de herramientas avanzadas sin un puente formal entre el análisis de requerimientos y la generación de código.</p>
+                            </div>
+                            <div class="card glow-yellow card--compact">
+                                <p>Alto riesgo de introducir <span class="highlight-yellow">deuda técnica</span> involuntaria en sistemas críticos.</p>
+                            </div>
+                            <div class="card card--center">
+                                <p>Costos de oportunidad operativos por subutilización de la automatización en el entorno de desarrollo y observabilidad.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">03 · PROPUESTA</div>
+                        <h2>Propuesta Profesional</h2>
+                        <p>Implementación de un marco de trabajo seguro para IA.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="cards-grid-2-1">
+                            <div class="card glow-blue">
+                                <div class="card-title">Metodología</div>
+                                <p>Adopción de <span class="highlight-yellow">Spec-Driven Development (SDD)</span> asistida por herramientas de IA.</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">Ingeniería de Software</div>
+                                <p>La IA se utiliza restringida a contratos previos y reglas estrictas, y no como un simple generador de código libre.</p>
+                            </div>
+                            <div class="card glow-green">
+                                <div class="card-title">Foco Central</div>
+                                <p>Asegurar la escalabilidad de la API crítica <code>triage-post-purchase-broker</code> (TPPB) combinando SDD y plataformas como Datadog.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">04 · RESULTADOS I</div>
+                        <h2>Resultados:<br>Observabilidad</h2>
+                        <p>Mejoras en el monitoreo de la API TPPB.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="card">
+                            <div class="card-title">Monitoreo Inteligente</div>
+                            <p>Implementación de una skill de IA conversacional para parametrizar la flexibilidad de los servicios.</p>
+                        </div>
+                        <div class="card glow-blue">
+                            <div class="card-title">Impacto en Datadog</div>
+                            <p>Se automatizó la creación de <span class="highlight-yellow">10 nuevos monitores</span> para alertas tempranas en métricas con impacto financiero directo.</p>
+                        </div>
+                        <div class="card glow-green">
+                            <div class="card-title">Estabilidad Lograda</div>
+                            <p>Gracias a la corrección de Casos de Uso (CDU) atípicos en la base de datos, el Error Rate se mantuvo estrictamente <span class="highlight">&lt; 0.05%</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">05 · RESULTADOS II</div>
+                        <h2>Resultados:<br>Eficiencia</h2>
+                        <p>Impacto en los tiempos de despliegue y desarrollo.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="card glow-green">
+                            <div class="card-title">Optimización del Lead Time</div>
+                            <p>En tareas de complejidad media, pasamos de 5 días de desarrollo a <span class="highlight"> 2-3 días</span> de desarrollo core, manteniendo el rigor del discovery y testing.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Rollout Productivo</div>
+                            <p>Los cambios en TPPB fueron finalizados a tiempo por nuestro equipo.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Gestión de Dependencias</div>
+                            <p>El despliegue se reprogramó estratégicamente al <span class="highlight-yellow">6 de julio</span> debido a demoras en la cobertura de pruebas End-to-End (E2E) por bugs detectados en entornos de stage de equipos interdependientes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6 -->
+            <section>
+                <div class="slide-layout">
+                    <div class="slide-left">
+                        <div class="section-tag">06 · CIERRE</div>
+                        <h2>Análisis y Conclusiones</h2>
+                        <p>Reflexiones finales sobre la práctica profesional.</p>
+                    </div>
+                    <div class="slide-right">
+                        <div class="card glow-blue">
+                            <p>Consolidación de un perfil <span class="highlight-yellow">End-to-End</span>, confirmando que la ingeniería de software a escala requiere considerar no solo lo el código sino también las metodologías y formas de trabajar.</p>
+                        </div>
+                        <div class="card">
+                            <p>Aplicación real de una cultura operativa madura, donde el foco principal es la entrega de valor al usuario.</p>
+                        </div>
+                        <div class="card">
+                            <p>Integración exitosa de los conocimientos académicos (arquitectura limpia y rigurosidad técnica) a los flujos productivos de la industria moderna.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        // Inicializamos Reveal con un área de visualización de alta resolución pero 
+        // contenido escalable dinámicamente dentro de nuestro contenedor.
+        Reveal.initialize({
+            controls: false, 
+            progress: false, 
+            center: true, 
+            hash: true,
+            transition: 'fade', 
+            width: 1080, // Área interna de las slides adaptada al layout sin barra lateral
+            height: 720, 
+            margin: 0.05,
+            disableLayout: false
+        });
+
+        // Lógica para actualizar contador y sidebar
+        Reveal.on('slidechanged', event => {
+            let pageNum = (event.indexh + 1).toString().padStart(2, '0');
+            document.getElementById('current-page').innerText = pageNum;
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            let activeItem = document.querySelector(`.nav-item[data-index="${event.indexh}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+                // Scroll automático en sidebar si es necesario
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+        
+        // Clics en el sidebar
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.addEventListener('click', () => {
+                Reveal.slide(parseInt(el.getAttribute('data-index')));
+            });
+        });
+    </script>
+</body>
+</html>
