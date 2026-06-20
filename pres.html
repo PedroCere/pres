@@ -326,7 +326,7 @@
         <div class="header-title">Adopción de IA en BPP</div>
         <div class="page-counter">
             <div class="badge">DEFENSA ORAL</div><br>
-            <span class="numbers" id="current-page">01</span><span class="total"> / 08</span>
+            <span class="numbers" id="current-page">01</span><span class="total"> / 07</span>
         </div>
     </div>
     
@@ -336,9 +336,8 @@
         <div class="nav-item" data-index="2">3. La Problemática<br><span class="dots">●</span></div>
         <div class="nav-item" data-index="3">4. Propuesta Profesional<br><span class="dots">●</span></div>
         <div class="nav-item" data-index="4">5. Observabilidad<br><span class="dots">●</span></div>
-        <div class="nav-item" data-index="5">6. Dashboard<br><span class="dots">●</span></div>
-        <div class="nav-item" data-index="6">7. Eficiencia y Despliegue<br><span class="dots">●</span></div>
-        <div class="nav-item" data-index="7">8. Conclusiones<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="5">6. Eficiencia y Despliegue<br><span class="dots">●</span></div>
+        <div class="nav-item" data-index="6">7. Conclusiones<br><span class="dots">●</span></div>
     </div>
 
     <div class="nav-buttons">
@@ -477,52 +476,13 @@
                 </div>
             </section>
 
-            <!-- SLIDE 5: DASHBOARD INTERACTIVO -->
-            <section>
-                <div style="width: 100%;">
-                    <div class="section-tag">05 · EVIDENCIA OPERATIVA</div>
-                    
-                    <div class="dashboard-container">
-                        <div class="embedded-dash-wrapper" style="background:#0f172a; border-radius:12px; padding:0; overflow:hidden; box-shadow: 0 10px 30px rgba(15,23,42,0.4);">
-                            <iframe id="embeddedDash" src="dash.html" style="width:100%; height:360px; border:0; border-radius:6px; background:transparent; display:block; overflow:hidden;" loading="lazy" scrolling="no"></iframe>
-                        </div>
-                        <script>
-                            (function(){
-                                const iframe = document.getElementById('embeddedDash');
-                                const wrapper = document.querySelector('.embedded-dash-wrapper');
-                                function resizeOnce(){
-                                    try {
-                                        const doc = iframe.contentDocument || iframe.contentWindow.document;
-                                        if (!doc) return;
-                                        const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-                                        // Ajustar exactamente al contenido para evitar scroll interno y huecos
-                                        iframe.style.height = h + 'px';
-                                        wrapper.style.height = (h) + 'px';
-                                        iframe.style.overflow = 'hidden';
-                                        wrapper.style.overflow = 'hidden';
-                                    } catch(e) {
-                                        // fallback razonable cuando no se puede acceder al contenido (p. ej. file:// o CORS)
-                                        const fallback = 720; // suficientemente alto para evitar scrolls y cortes
-                                        iframe.style.height = fallback + 'px';
-                                        wrapper.style.height = (fallback) + 'px';
-                                    }
-                                }
-                                iframe.addEventListener('load', resizeOnce);
-                                // Por si el contenido cambia después de la carga
-                                setTimeout(resizeOnce, 500);
-                                window.addEventListener('resize', function(){ try { resizeOnce(); } catch(e){} });
-                            })();
-                        </script>
-                    </div>
-                    <p style="text-align: center; font-size: 12px !important; margin-top: 10px !important;">*Datos anonimizados y recreados en base a métricas operativas (mayo - Junio 2026).</p>
-                </div>
-            </section>
+            <!-- SLIDE REMOVED: Dashboard (dashboard embedded via dash.html). Eliminado por petición del usuario. -->
 
-            <!-- SLIDE 6 -->
+            <!-- SLIDE 5 -->
             <section>
                 <div class="slide-layout">
                     <div class="slide-left">
-                        <div class="section-tag">06 · RESULTADOS II</div>
+                        <div class="section-tag">05 · RESULTADOS II</div>
                         <h2>Resultados:<br>Eficiencia</h2>
                         <p>Impacto en los tiempos de despliegue y desarrollo.</p>
                     </div>
@@ -547,11 +507,11 @@
                 </div>
             </section>
 
-            <!-- SLIDE 7 -->
+            <!-- SLIDE 6 -->
             <section>
                 <div class="slide-layout">
                     <div class="slide-left">
-                        <div class="section-tag">07 · CIERRE</div>
+                        <div class="section-tag">06 · CIERRE</div>
                         <h2>Análisis y Conclusiones</h2>
                         <p>Reflexiones finales sobre la práctica profesional.</p>
                     </div>
@@ -606,6 +566,8 @@
 
         // INICIALIZACIÓN DE GRÁFICOS CHART.JS (DASHBOARD)
         document.addEventListener('DOMContentLoaded', function() {
+            // Si el dashboard fue removido, evitar inicializar gráficos que no existen
+            if (!document.getElementById('chartError') || !document.getElementById('chartTraffic')) return;
             // Fechas en el eje X para coincidir con la imagen
             const labels = Array(30).fill('');
             labels[4] = '24';
