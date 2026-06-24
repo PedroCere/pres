@@ -1,5 +1,12 @@
-- [ ] Variar layout visual de las slides: en algunas, reordenar tarjetas para que queden 2 arriba + 1 abajo; en otras, usar un formato alternativo (sin cambiar el contenido).
-- [ ] Actualizar CSS para soporte de layouts alternativos (grid 2x/stack, estilos para cards en distintas posiciones).
-- [ ] Editar `pres.html` slide por slide aplicando los nuevos layouts sin tocar los textos.
-- [ ] Verificar que no se rompa el layout (reveal container, sidebar y navegación).
+- [x] Plan aprobado: agregar dashboard al slide 5 (RESULTADOS II) respetando estilo dark (#0d1117) y layout con Flexbox/Grid.
+- [x] Actualizar `pres.html`:
+  - [x] Agregar CSS para theme dark del dashboard + tooltip personalizado + KPI cards + selector rango de tiempo.
+  - [x] Inyectar HTML del dashboard dentro del slide 5 reemplazando el contenido actual a nivel visual (sin alterar textos no relacionados, solo el área de slide 5).
+  - [x] Incluir Chart.js desde CDN.
+  - [x] Implementar JS para generar datos falsos coherentes.
+  - [x] Configurar gráfico errores con límite 0.05% (línea punteada roja + etiqueta) y tooltip personalizado.
+  - [x] Configurar gráfico tráfico con tooltip estándar.
+  - [x] Asegurar que el canvas tenga tamaño correcto dentro de Reveal.
+- [ ] Probar abriendo `pres.html` y verificando rendimiento/legibilidad.
+
 
